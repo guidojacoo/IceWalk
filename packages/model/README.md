@@ -36,6 +36,8 @@ python ../../data/download.py --only hirise_ortho_25cm hirise_ortho_label hirise
 
 # Capas y catálogo REALES de la zona de la EVA, en data/processed/s1094b/ (~15 min)
 uv run python -m vision.run --site s1094b
+# O bajarlas ya hechas (0.5 MB) y descomprimir en data/processed/:
+#   https://github.com/guidojacoo/IceWalk/releases/download/vision-s1094b-2026-11-13/icewalk-vision-s1094b-2026-11-13.zip
 # Capas FALSAS (is_mock) para integrar sin imágenes: siempre en otra carpeta
 uv run python -m vision.mock_layers --out ../../data/processed/s1094b-mock
 ```
