@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | 1 | Entorno | **Hecho.** Los ortos se leen por ventanas: abrirlos enteros con `WarpedVRT` no termina |
 | 2 | Verdad de terreno | **Pendiente, a mano.** Recortes listos con `python -m vision.labels` (`test_eva`, `test_ejecta`, `tune`); falta anotarlos en QGIS (cuestión 65) |
-| 3 | `boulders.py` | **Hecho**, con tests sobre escena sintética (F1 ≥ 0.98 para ≥ 2 m). El F1 real espera a la tarea 2 |
+| 3 | `boulders.py` | **Hecho, pero no alcanza.** F1 real contra BoulderNet: 0.13-0.49 (`python -m vision.bouldernet`, `EXPERIMENTS.md`). En la escena sintética da 0.98: no se traslada |
 | 4 | Capas reales | **Hecho** para la zona de la EVA: `python -m vision.run`. El catálogo valida contra el esquema y el planificador usa la capa (`uses_corridor` en true). Ninguna celda queda sin pasillo: las rutas no cambian |
 | 5 | Vara de Tusberti | **Hecho, y da mal**: ~25 % de su conteo sobre 1.8 m y una distribución mucho más plana (`EXPERIMENTS.md`, 2026-11-13) |
 | 6 | Entrega | PR con código, tests y docs. Capas y catálogo en un Release del fork de Guido: [`vision-s1094b-2026-11-13`](https://github.com/guidojacoo/IceWalk/releases/tag/vision-s1094b-2026-11-13); al mergear, pasarlo al repo principal. Falta avisar a Planificador y Frontend |

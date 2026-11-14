@@ -400,3 +400,7 @@ labels:
     name: Ice-exposing scarps and new craters, mid-latitudes
     url: https://doi.org/10.5066/P9Y8FR1R
     citation: Dundas et al. (2021) USGS data release
+  - id: bouldernet_mars
+    name: BoulderNet hand-mapped boulders on Mars HiRISE patches (4 images, 49 patches)
+    url: https://zenodo.org/records/8171052/files/Apr2023-Mars-Moon-Earth-mask-5px.zip
+    citation: Prieur et al. (2023) JGR Planets; CC BY 4.0

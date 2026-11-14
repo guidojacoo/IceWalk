@@ -19,6 +19,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import numpy as np
+from scipy.spatial import cKDTree
 
 from vision.grid import REPO_ROOT
 from vision.labels import LABEL_CROPS, LABELS_DIR, Label, load_labels
@@ -46,10 +47,17 @@ def _match(labels: list[Label], found: list[Label]) -> list[tuple[int, int]]:
     """Empareja de a uno, de la pareja más cercana a la más lejana.
 
     Dos centros son el mismo bloque si distan menos que medio diámetro del mayor (mínimo 1 m).
+    Busca con un árbol espacial: con miles de bloques, comparar todos contra todos no termina.
     """
+    if not labels or not found:
+        return []
+    tree = cKDTree([(item.x_m, item.y_m) for item in found])
+    largest = max(item.diameter_m for item in found)
     candidates = []
     for i, label in enumerate(labels):
-        for j, item in enumerate(found):
+        reach = max(1.0, 0.5 * max(label.diameter_m, largest))
+        for j in tree.query_ball_point((label.x_m, label.y_m), reach):
+            item = found[j]
             distance = math.hypot(label.x_m - item.x_m, label.y_m - item.y_m)
             if distance <= max(1.0, 0.5 * max(label.diameter_m, item.diameter_m)):
                 candidates.append((distance, i, j))

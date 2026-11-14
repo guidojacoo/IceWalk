@@ -528,3 +528,27 @@ Detector sobre ESP_073077_2155 sola (`--zone tusberti --image ESP_073077_2155`).
 | Escena sintética: 60 bloques de 1.5-5 m y 8 cráteres sobre terreno ondulado, 250 × 250 m | F1 de 1.00 con el sol de abril y 0.98 con el de febrero y con otro azimut, para ≥ 2 m; error de diámetro 0.3-0.6 px. Es más fácil que el terreno real: no reemplaza al F1 de las etiquetas |
 | `contracts/validate.py` | Pasa; 37 capas en `layers.yaml` |
 | Catálogo real contra `boulders.schema.json` | Válido |
+
+### Medición externa: bloques marcados a mano de BoulderNet (2026-11-14)
+
+`python -m vision.bouldernet` corre el detector sobre los recortes HiRISE de Marte del dataset de Prieur et al. (2023), Zenodo 8171052, CC BY 4.0: 4 imágenes, 49 recortes, 6826 bloques marcados a mano. Etiquetas que no hicimos nosotros: es la primera medición real del detector.
+
+| Imagen | Incidencia | F1 ≥ 2 m | F1 ≥ 3 m |
+| --- | --- | --- | --- |
+| ESP_017355_2260 (0.5 m/px) | 42° | 0.33 | 0.49 |
+| ESP_025650_2165 (0.25 m/px) | 38° | 0.42 | 0.47 |
+| ESP_028537_2270 (0.25 m/px) | 58° | 0.49 | 0.46 |
+| ESP_037018_2170 (0.6 m/px) | 53° | 0.13 | 0.30 |
+
+**El detector no cumple el criterio de F1 ≥ 0.70.** El 0.98-1.00 de la escena sintética no se traslada a datos reales. Dos salvedades: en ESP_017355 y ESP_037018 los anotadores marcaron solo bloques de 3 m o más, así que a 2 m hay bloques reales contados como falsos positivos; y esas imágenes tienen el sol más alto que S1094b (63-68°).
+
+Errores que se ven: faltan bloques grandes y brillantes, y sobran pozos chicos y textura. Prototipos probados (código en el scratch de la sesión, no en el repo):
+
+| Prueba | Resultado |
+| --- | --- |
+| Candidatos amplios a dos escalas de fondo + clasificador (gradient boosting), validado dejando una imagen afuera | Los candidatos alcanzan 69-85 % de los bloques; F1 0.32-0.42. No mejora |
+| Candidatos con un filtro orientado al sol (cara iluminada seguida de sombra), multiescala | Alcanzan 83-98 % de los bloques: mejor generador |
+| El mismo clasificador sobre esos candidatos | AUC 0.62-0.94 en la imagen dejada afuera; las probabilidades no viajan entre imágenes. Sin terminar |
+
+Siguiente paso recomendado: un detector aprendido (CNN chica o BoulderNet) entrenado con este dataset, sumando los recortes lunares para tener más datos. Hay que decidirlo con Luqui (`plans/vision.md`).
+
