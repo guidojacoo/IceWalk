@@ -9,13 +9,13 @@
 | # | Tarea | Estado |
 | --- | --- | --- |
 | 1 | Entorno | **Hecho.** Los ortos se leen por ventanas: abrirlos enteros con `WarpedVRT` no termina |
-| 2 | Verdad de terreno | **Pendiente, a mano.** Recortes listos con `python -m vision.labels` (`test_eva`, `test_ejecta`, `tune`); falta anotarlos en QGIS (cuestión 65) |
+| 2 | Verdad de terreno | **Pendiente, a mano.** Recortes listos con `python -m vision.labels` (`test_eva`, `test_ejecta`, `tune`); falta anotarlos en QGIS (cuestión 74) |
 | 3 | `boulders.py` | **Hecho, pero no alcanza.** F1 real contra BoulderNet: 0.13-0.49 (`python -m vision.bouldernet`, `EXPERIMENTS.md`). En la escena sintética da 0.98: no se traslada |
 | 4 | Capas reales | **Hecho** para la zona de la EVA: `python -m vision.run`. El catálogo valida contra el esquema y el planificador usa la capa (`uses_corridor` en true). Ninguna celda queda sin pasillo: las rutas no cambian |
 | 5 | Vara de Tusberti | **Hecho, y da mal**: ~25 % de su conteo sobre 1.8 m y una distribución mucho más plana (`EXPERIMENTS.md`, 2026-11-13) |
 | 6 | Entrega | PR con código, tests y docs. Capas y catálogo en un Release del fork de Guido: [`vision-s1094b-2026-11-13`](https://github.com/guidojacoo/IceWalk/releases/tag/vision-s1094b-2026-11-13); al mergear, pasarlo al repo principal. Falta avisar a Planificador y Frontend |
 
-Lo que sigue, en orden: anotar la verdad de terreno y medir el F1 real; con eso, revisar los umbrales (`SOURCES.md`, "Supuestos de visión"); decidir qué imagen manda (cuestión 67); el sitio entero; persistencia con ESP_077719.
+Lo que sigue, en orden: anotar la verdad de terreno y medir el F1 real; con eso, revisar los umbrales (`SOURCES.md`, "Supuestos de visión"); decidir qué imagen manda (cuestión 76); el sitio entero; persistencia con ESP_077719.
 
 
 ## Para el hackatón: qué hacer y en qué orden
@@ -67,7 +67,7 @@ Lo que sigue, en orden: anotar la verdad de terreno y medir el F1 real; con eso,
 
 ### Preguntas abiertas de visión
 
-12 (polígonos de Tusberti), 14 y 37 (imágenes posteriores a feb 2023), 18 (escarcha en dic 2022), 61 (cómo llega el catálogo a la web), 62 (capas mock en el planificador), 65 (verdad de terreno a mano), 66 (qué se dibuja como roca), 67 (qué imagen manda), 68 (la capa de pasillo no cambia las rutas) y 69 (una cita de `SOURCES.md` que no corresponde), en `docs/OPEN_QUESTIONS.md`.
+12 (polígonos de Tusberti), 14 y 37 (imágenes posteriores a feb 2023), 18 (escarcha en dic 2022), 61 (cómo llega el catálogo a la web), 62 (capas mock en el planificador), 74 (verdad de terreno a mano), 75 (qué se dibuja como roca), 76 (qué imagen manda), 77 (la capa de pasillo no cambia las rutas) y 78 (una cita de `SOURCES.md` que no corresponde), en `docs/OPEN_QUESTIONS.md`.
 
 ## Qué hace este módulo
 

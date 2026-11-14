@@ -90,7 +90,7 @@ Valores sin fuente, en `model/gp/observations.py`. Se ajustan en el paso 5 del p
 
 ## Supuestos de visión
 
-Valores sin fuente en `packages/model/vision/boulders.py` (`DetectorParams`) y `vision/catalog.py`. Los umbrales se eligieron a ojo sobre el recorte `tune` (`vision/labels.py`), sin verdad de terreno: se revisan cuando estén las etiquetas a mano (cuestión 65).
+Valores sin fuente en `packages/model/vision/boulders.py` (`DetectorParams`) y `vision/catalog.py`. Los umbrales se eligieron a ojo sobre el recorte `tune` (`vision/labels.py`), sin verdad de terreno: se revisan cuando estén las etiquetas a mano (cuestión 74).
 
 | Valor | Qué es | Por qué ese valor |
 | --- | --- | --- |

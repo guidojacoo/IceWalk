@@ -463,7 +463,7 @@ Mediana regional 2.89 m (1.91-4.36). Sitio: GO, por el radar. Con `min_p` entre 
 
 ## 2026-11-13: visión, bloques reales por sombras
 
-Detector `vision/boulders.py` sobre los dos ortos de 25 cm del par estéreo: ESP_073578_2155 (7 abr 2022, incidencia 67.7°, emisión 20.7°) y ESP_073077_2155 (27 feb 2022, 63.4° y 4.8°). Corrida completa con `python -m vision.run`. Los umbrales se eligieron mirando solo el recorte `tune` (`vision/labels.py`). Donde dice "a ojo" es una revisión de recortes de 16-20 m hecha con Claude: **no es verdad de terreno** y no reemplaza al paso 2 del plan, que sigue pendiente (cuestión 65).
+Detector `vision/boulders.py` sobre los dos ortos de 25 cm del par estéreo: ESP_073578_2155 (7 abr 2022, incidencia 67.7°, emisión 20.7°) y ESP_073077_2155 (27 feb 2022, 63.4° y 4.8°). Corrida completa con `python -m vision.run`. Los umbrales se eligieron mirando solo el recorte `tune` (`vision/labels.py`). Donde dice "a ojo" es una revisión de recortes de 16-20 m hecha con Claude: **no es verdad de terreno** y no reemplaza al paso 2 del plan, que sigue pendiente (cuestión 74).
 
 ### Camino al detector
 
