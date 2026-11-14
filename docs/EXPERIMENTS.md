@@ -204,7 +204,7 @@ Código: `packages/model/gp/validation.py` y `simulation.py robustness`, con tes
 Campaña de 3 EVAs: con verdad sin estructura, todas las estrategias quedan parejas (por ejemplo, 11.5-12.3 puntos con hielo de 18 con 3 m); con `rho` 0.5, potencial + incertidumbre suma 1-2 puntos más en los hábitats con cráteres.
 
 **Conclusión:**
-- **Sin estructura, elegir dónde medir no le gana a la grilla.** Y los cráteres reales no muestran estructura predictiva. El ×2.8 de la simulación anterior **no está respaldado por datos reales** y no va al pitch.
+- **Sin estructura, elegir dónde medir no le gana a la grilla.** Y los cráteres reales no muestran estructura predictiva. El ×2.8 de la simulación anterior **no está respaldado por datos reales** y no va al pitch. **Corregido el 2026-11-12:** esta validación no tenía potencia para ver la estructura (ver la entrada de ese día); el ×2.8 queda sin confirmar, no refutado.
 - Potencial + incertidumbre **nunca pierde** de forma clara y gana si hay estructura, así que sigue siendo un buen criterio por defecto, sin costo. Con estructura, también le gana al geólogo.
 - **La palanca grande es la herramienta, no el lugar:** con cualquier estrategia, 1 m da ~0.2-0.5 puntos con hielo por EVA y 3 m da ~4 de 6.
 - Lo que queda por ver es si las mediciones de la EVA revelan estructura a menos de ~100 m, que los cráteres no resuelven. Solo una EVA real podría mostrarlo.
@@ -380,6 +380,80 @@ Terreno real, 349 cráteres sintéticos, STM con umbral de 3 m.
 | Escaneo de contornos de foco recortados en `/design` (antes/después del arreglo de `Alert`) | Antes: campo y última acción de la alerta recortados; después: ninguno | Arreglado |
 
 
+## 2026-11-09: composición inmersiva y movimiento (Codex)
+
+Ver `research/diseno-inmersivo-y-motion.md` y `research/motion-audit-2026-11-09.json`.
+
+- Dos composiciones previas (panel lateral / workspace dividido) rechazadas por Eitan: densidad, espacios y componentes inconsistentes. La actual usa escena completa y ventanas contextuales.
+- Red→green en selección/disclosure de listas, hit area de campos, orientación compacta de tabs y presencia con salida/interrupción/Reduce Motion. UI 74 y web 38 tests; lint/tipos pasan.
+- Auditoría anterior a motion: 35 estados, 680 observaciones de controles, 320/390/1024/1440 px. Detectó y corrigió dock recortado, nav cubierta por panel, zoom sin fondo, Targets sin representación y estaciones que saltaban al replan.
+- Primera implementación motion con blur animado y geometría por cuadro: Eitan reportó lag y poco parecido con Apple. Retirada. Se detectó selección duplicada y portal que desaparecía antes de terminar: corregidos.
+- 36 acciones en producción con animaciones observadas; p95 habitual 16.7–16.8 ms, sin long tasks. Picos fríos de hasta 100 ms; repetir menú y time picker dio 16.7–16.8 ms. No equivale a garantizar 60 fps ni a validar Safari.
+- Alerta real retiene salida y recupera foco. Último cambio de rueda pasó checks, aún sin QA visual final.
+- Una última captura se atascó en agent-browser al cambiar viewport; no se confirmó defecto de aplicación. `web:test` simultáneo con `web:build` falló por recopia de Cesium; ejecutados secuencialmente pasan.
+
+
+## 2026-11-10: imágenes reales del sitio para la web
+
+- Lectura por ventanas de los ortos HiRISE en la copia COG de USGS (`/vsicurl/` con `rasterio`, vía `uv run --with rasterio`), sin bajar los `.tif` (50 a 700 MB): funciona y tarda segundos. `RED_C` (1.06 m/px) para el contexto y `RED_A` (0.27 m/px) para el detalle.
+- Los ortos están en equirectangular con `lat_ts=0` y `R=3396190`; la grilla usa `lat_ts=35.1105` y `R=3389574.349`. Un recorte sin reproyectar deja el píxel estirado ~22 % en x y el cráter corrido ~150 m en x respecto de (0, 0). Hay que reproyectar a la grilla. El registro final (≤ 20 m) lo mide el script `apps/web/scripts/build-site-imagery.py`.
+- La zona de las estaciones (x 100…400, y −2300…−2200) es terreno picado sin rasgos grandes; el cráter queda a 2.2 km al norte. Las dos líneas oscuras del orto son artefactos del sensor.
+- `gdal` no está instalado en la máquina de Eitan; `rasterio` por `uv` alcanza.
+
+## 2026-11-10: recuperación y envío de mediciones (Codex)
+
+- Estado inicial recuperado: UI lint/tipos y89tests pasan. Web falla por11helpers ausentes de etapa2 (12tests nuevos de Claude), no por los cambios heredados de motion; el worker de diseño continúa ese rojo.
+- #58 reproducida: dos llamadas de `logMeasurement` sin esperar a la primera generan dos `/replan` desde el mismo plan_id; el segundo aborta el primero. El test espera un solo request y falla con2 antes del arreglo.
+- Guard síncrono en sesión API devuelve `busy` mientras hay replan pendiente; no cancela ni registra segundo envío. Después del primer resultado, la siguiente medición usa el plan_id nuevo. Reset conserva invalidación de respuestas anteriores.22tests de sesión pasan; ESLint de los dos archivos pasa.
+- El test anterior de supersesión por segundo envío se adapta al comportamiento aprobado de bloqueo; la supersesión por reset se conserva con su propio escenario. No se eliminó cobertura de respuestas viejas.
+
+## 2026-11-11: verificación de Claude recuperada e integración Codex
+
+Evidencia histórica del transcript `bfbd54aa-2f00-438b-9990-e0a9c35d7f86`, informes de inputs y motion del 11/11 a las 11:07 UTC. No confundir con una corrida nueva de Codex.
+
+- UI: lint y tipos limpios, 163 tests en 35 archivos; motion 46 tests. Se corrigieron con rojo → verde el doble settle de TimeWheel (salto de 25.6 px al soltar una fila), la marca inactiva de Collapse, vidrio de ventana sin fade inicial y backdrop de diálogo desmontado antes de terminar su fade.
+- Chromium dev 1440×900, según el agente: apertura 347–391 ms, salida 131–149 ms, selección 280 ms; p95 de cuadro 16.7–16.8 ms. Reduce Motion: cero animaciones visuales en las superficies recorridas. No prueba rendimiento de producción, GPU ni Safari.
+- Inputs: QA a 1440×900 y 390×844; Select/Combobox posicionados, foco de 2 px, validación/disabled y sin desborde horizontal. Corregidos banda vacía de Combobox y TokenField que saltaba de línea con `min-w-32` (se reduce a `min-w-24`). La mitad inferior normal a 390 no tuvo captura visual; se midió el ancho.
+- Evidencia auxiliar original: `/tmp/icewalk-inputs/` y `/tmp/icewalk-motion/verify/`. Los informes describen las limitaciones: notificaciones/share sheet/tooltips sin recorrido nuevo, Safari/WebKit sin validar y percepción estética pendiente del usuario.
+- Entrada Codex: `bun run moon run ui:lint ui:typecheck ui:test` recupera caché válida para esos mismos archivos (163 tests). Se registra como caché, no como ejecución nueva. Diseño se cortó después de 20 tests puntuales verdes y ediciones de layout, sin QA final; se continúa antes del build integrado.
+
+## 2026-11-11: fidelidad visionOS y cierre de vistas
+
+- Investigación nueva con clips primarios de visionOS, método de medición y límites en [visionos-motion-fidelity-2026-11-11.md](research/visionos-motion-fidelity-2026-11-11.md). La referencia anterior de Liquid Glass iOS/macOS no demostraba el movimiento del sistema espacial.
+- Pixel-test del shader SVG: Chromium desplaza el patrón detrás del panel y deja el exterior idéntico. Safari nativo (CUA, mismo HTML local) muestra patrón continuo sin efecto visible. Resultado técnico por motor, sin inferir soporte desde la sintaxis ni identidad con el material nativo.
+- QA de vistas final Chromium: 1440/1024/390, sin desborde horizontal; guía/minimapa EV, encuadre de la próxima estación y Map focus compacto corregidos con tests rojos → verdes. Web 149 tests; QA incluyó replan negativo, Science y vuelo Cesium real. Build y API vivo no probados por ese worker.
+
+## 2026-11-12: Fluid Kit y Liquid Glass iOS 27
+
+- Morph de Fluid Kit sobre popups de Base UI (Chromium, a 0.08× con `SpringAnimator.timeScale`): el botón se convierte en el menú en un trazo continuo con un leve rebote y vuelve a él al cerrar; asentado en ~450 ms a velocidad normal.
+- Falló: registrar el popup en el morph al montarlo. Quedaba `visibility: hidden` dos cuadros y Base UI no podía enfocar el primer ítem al abrir con teclado (test rojo de foco). Se registra recién al volar, con `opacity: 0` antes, que sí admite foco.
+- Falló: con Reduce Motion el morph restauraba ese `opacity: 0` propio y la ventana quedaba invisible (test rojo en el playbook). Se limpia antes de entregarla al morph.
+- Falló: el vidrio de los `<button>` salía sin relleno (solo blur, color del fondo). Causa: preflight de Tailwind en `base` después de `liquid-blur`. Resuelto con el orden de capas.
+- jsdom no tiene `matchMedia` ni `ResizeObserver`, y Fluid Kit los usa: se agregaron stubs en los `vitest.setup.ts`, con movimiento reducido (morph e indicator instantáneos).
+- Checks: UI 125/125, web 149/149, lint y tipos limpios. QA visual en Chromium de `/lab`, `/` y `/design`. Safari y build de producción sin probar en esta unidad.
+
+## 2026-11-12: cierre del playbook HIG y Morph (continuación Codex)
+
+- Revalidación nueva, sin depender solo del handoff: 129 tests UI (31 archivos), 150 web (12 archivos), lint y tipos de ambas áreas; build de producción pasa. Referencia de tests: ejemplo oficial `vercel/next.js/examples/with-vitest` y guía de Vitest de Next.js 16.4.5 instalada.
+- Rojo → verde: DatePicker/TimePicker ignoraban `side`/`align`; ahora los transmiten al positioner, conservan el botón y devuelven el foco. Test nuevo de apariencia comprueba claro/oscuro y restauración al desmontar. Tests nuevos de ventana verifican montaje/cierre, foco y reversión. El test del playbook comprueba navegación al detalle y Escape.
+- Falló la primera composición multiestado: callbacks de ref inline volvían a registrar los estados al actualizarse el motor. Corregido con `useMergedRefs`, manteniendo refs estables; se revalidaron el test y el navegador.
+- Morph real de resumen a detalle en Chromium: 21 cuadros muestreados con transform animado; destino 400 × 288 px a viewport 1440 × 900. El invocador permanece visible. Escape devuelve el foco. No es una medición de rendimiento ni identidad píxel a píxel con UIKit.
+- Fecha y hora: apertura/cierre real de sus pickers con Morph, teclado y sin errores de consola en el recorrido. Reduce Motion: estado detalle visible (`opacity: 1`) y sin transform al cambiar entre estados.
+- Layout: capturas a 1440, 390 y 320 px; ancho del documento igual al viewport en los recorridos pequeños. Apertura/cierre de sidebar móvil y devolución de foco comprobados. Cero fondos con URL en el playbook recorrido.
+- axe sobre la portada clara: al principio detectó 6 pares de texto secundarios con contraste insuficiente; se refuerza el token claro y se corrige el fondo de lista. Recorrido posterior: cero violaciones detectadas, 19 comprobaciones de contraste sobre vidrio indeterminadas por sus gradientes (requieren revisión visual). No equivale a auditoría integral WCAG de todas las familias.
+- Safari nativo no se considera validado: CUA agotó el tiempo y luego informó cambio de ventana durante uso del usuario; se cerró ese recorrido sin interferir. El kit de Figma de iOS 27 sigue sin medición. Evidencia temporal: `/tmp/icewalk-hig-*`, `/tmp/icewalk-morph-*`, `/tmp/icewalk-release-checks.log`.
+- QA final de portada móvil: la grilla implícita y el mínimo automático del slider ensanchaban las tarjetas aunque el scroller ocultaba el exceso. Corregidos con `grid-cols-1`, tracks `minmax(0, …)` y `min-w-0`, sin CSS de layout adicional.
+- Reduce Motion necesitó mover el foco también en `onRest`: en un cambio instantáneo `onStart` ocurre antes de mostrar el estado nuevo. Se mantiene el foco dentro de la ventana y se devuelve al botón al cerrar.
+
+## 2026-11-12: escala compacta y consistente
+
+- Feedback de Eitan: revisar paddings, tamaños, anchos, altos, márgenes y gaps. Marco compartido de 960 px, sidebar de 256 px, título de 22 px y muestras con padding de 16 px; gaps internos de 12/16 px y separación de 24 px. Sin zoom ni cambio de fuente raíz.
+- Medición Chromium: filas de portada de 44 px de alto y 358 px de ancho a viewport 390; ningún descendiente de la portada fuera del viewport después de asentarse el layout. Calendario de 340 px en escritorio, adaptable a 320 px; dígitos seleccionados de hora de 22 px.
+- Morph: eliminada la reserva de 528 px; el ejemplo cerrado mide 120 px incluyendo encabezado y stage de 92 px. Resumen de 288 px y detalle de 352 px, limitados al espacio disponible; altura según contenido. Se conservan los estados medibles de Fluid Kit.
+- Recorrido de portada y 30 familias a 390 px: ancho del documento igual al viewport en todas. Se detectaron descendientes anchos en los ejemplos de tabs de iPad, toolbar con overflow y teclado. Los dos primeros disponen de scroll horizontal explícito. El teclado se ajustó a su contenedor: a viewport 320 mide 256 px, teclas de 44 px de alto y ningún descendiente fuera del viewport; ya no exige scroll lateral para escribir.
+- Morph móvil a 320 px: apertura, cambio a detalle de 256 × 352 px sin overflow y cierre con Escape; foco devuelto al botón invocador.
+- Lint/tipos de UI y web, 129 tests UI, 150 tests web y build pasan. Una ejecución intermedia falló por `pointer-events: none` en la prueba existente de accesorios del menú; la ejecución posterior completa pasó sin cambios en menú. Evidencia temporal: `/tmp/icewalk-scale-recheck.log`, `/tmp/icewalk-scale-families-mobile.json`, `/tmp/icewalk-scale-*.png`. Son medidas web y QA Chromium; Safari y comparación contra Figma continúan pendientes.
+
 ## 2026-11-10: prior regional con Daubar 2022 y mapa de calor (GP)
 
 Datos: tabla S1 de Daubar et al. 2022 (1203 cráteres nuevos, CC BY 4.0, checksum de Zenodo comprobado) y SWIM 4 MIM Ci 0-1 m y 1-5 m (GeoTIFF del 2025-08-04). Todo en `data/raw/` y `data/processed/daubar2022/`, fuera de Git; scripts en `data/processed/daubar2022/analysis/`. **En la tabla original, los encabezados de latitud y longitud están cruzados**: "Latitude (deg E)" trae valores de -82 a 75 (es la latitud) y "Longitude (deg N)" de 0 a 360 (es la longitud este).
@@ -460,6 +534,60 @@ Terreno real con 349 cráteres sintéticos, y el terreno sintético de los tests
 | Radar (GPR) | 10 m | 0.968 | 0.909-0.996 | GO |
 
 Mediana regional 2.89 m (1.91-4.36). Sitio: GO, por el radar. Con `min_p` entre 0.15 y 0.9 los tres veredictos no cambian: la decisión no depende del umbral exacto, que es lo que pide la regla de prospección (Peel 2015). A 10°N da INSUFFICIENT_DATA con aviso en inglés. Es el prior regional (solo latitud); no usa los 349 cráteres del sitio.
+
+## 2026-11-12: validación para el jurado (GP)
+
+Código: `gp/validation.py` (`power_test`), `gp/regional_validation.py`, `gp/tool_strategy.py`, `scripts/validate_regional.py` y `scripts/exploration_zones.py`, con tests. Resultados en `data/processed/s1094b/validation_power.json` y `data/processed/daubar2022/validation.json`, fuera de Git; las zonas, en `packages/contracts/examples/exploration_zones.json`.
+
+**1. ¿La validación del 8/11 podía ver la estructura?** Se sortearon 150 catálogos por escenario, con las posiciones y los diámetros reales y profundidades del GP (fondo plano si `d < 0.2 D`, error de 15 cm), y se les corrió la misma validación (leave-one-out, modelo con `rho` 0.5). Salen 55 fondos planos en promedio, contra 48 reales.
+
+| Verdad | AUC medio | 90 % de los mundos | Mundos con AUC ≤ 0.52 (el real) |
+| --- | --- | --- | --- |
+| Sin estructura (`rho` 0) | 0.496 | 0.39-0.61 | 65 % |
+| Débil (`rho` 0.25) | 0.537 | 0.40-0.69 | 40 % |
+| La del ×2.8 (`rho` 0.5) | 0.566 | 0.43-0.69 | 28 % |
+
+**La prueba no tiene potencia.** Con 29 positivos, las distribuciones se pisan casi enteras: el AUC real de 0.52 favorece "sin estructura" apenas 1.3 a 1 (cociente de densidades, cálculo propio aproximado). **Corrección de la entrada del 8/11:** el ×2.8 no quedó refutado por los datos reales, quedó **sin confirmar**. Sigue siendo un resultado condicionado a la estructura que estimó el ajuste del sitio (variograma con p = 0.09). Solo mediciones a menos de ~100 m entre sí, en una EVA o con un rover, lo decidirían.
+
+**2. Calibración del prior regional fuera de muestra.** Cada impacto de Daubar 2022 (383 al norte de 20°N, 37 con hielo) se predijo con un ajuste sin su sector de 60° de longitud.
+
+| P predicha | Impactos | Predicho | Observado (90 %) |
+| --- | --- | --- | --- |
+| 0-0.05 | 306 | 0.003 | 0.003 (0.00-0.01) |
+| 0.05-0.20 | 27 | 0.093 | 0.111 (0.05-0.25) |
+| 0.20-0.50 | 18 | 0.339 | 0.333 (0.18-0.53) |
+| 0.50-0.80 | 13 | 0.643 | 0.846 (0.63-0.95) |
+| 0.80-1.00 | 19 | 0.960 | 0.842 (0.66-0.94) |
+
+Brier 0.033 contra 0.087 de una tasa fija; 36.2 impactos con hielo esperados por 37 observados; por franja de latitud, todas dentro de ~2 (20-35°N: 0 por 2.0; 40-45°N: 7 por 4.9; 45-50°N: 7 por 4.8). El AUC de 0.98 viene sobre todo de la latitud, que separa trivialmente norte y sur: no conviene venderlo solo. Entre 0.5 y 0.8 el prior subestima y arriba de 0.8 sobreestima, con intervalos que casi tocan lo predicho.
+
+**3. Sitios donde una misión cavó (el ajuste nunca los vio).**
+
+| Sitio | Prior regional | Encontrado | Lectura |
+| --- | --- | --- | --- |
+| Phoenix (68.2°N) | Mediana 7 cm; 90 % local 2-22 cm; P(hielo ≤ 18 cm) 0.91 | Hielo a 4.6 cm de media, variación de más de 10 veces (Mellon et al. 2009) | **Coincide** |
+| Viking 2 (48.0°N) | Mediana 68 cm; 90 % local 24-192 cm; P(hielo ≤ 15 cm) 0.01 | Sin hielo en su zanja de 10-15 cm (PIA12214) | Coincide con lo observado |
+| Viking 2, según Byrne et al. 2009 | P(hielo ≤ 30 cm) 0.10 | Estiman hielo "slightly deeper" que la zanja (modelo térmico + cráteres, no medido) | **Tensión abierta** (cuestión 66) |
+
+**4. ¿El prior por latitud falla en alguna longitud?** En 130-190°E y 40-60°N (caja elegida después de ver lo de Viking 2): 10 impactos con hielo por 5.3 esperados (z = 3.2, a posteriori). El exceso está en Arcadia (165-190°E): Amazonis 12 por 6.9, Phlegra y Acheron 10-11 por 5.1-5.4, y alrededor de S1094b 7 por 3.4 (z = 2.7). Alrededor de Viking 2 (±30° en 134°E) no es significativo: 6 por 4.9. Con esto, la tarjeta suma el control local `nearby_impacts` y avisa "ice is likely shallower here" cuando z ≥ 2. En S1094b coincide con el prior del sitio (2.36 m contra 2.89 m del regional).
+
+**5. Radar primero, taladro después.** Monte Carlo con la mezcla exacta del reflector falso, prior de S1094b, taladro de 1 m y 6 estaciones.
+
+| Regla | P(hielo) por estación | EVA con al menos un acierto | EVAs hasta confirmar |
+| --- | --- | --- | --- |
+| Perforar a ciegas | 0.058 | 0.30 | 3.3 |
+| Perforar donde el radar marca ≤ 1 m (50 sondeos por EVA) | 0.50 (×8.7) | 0.86 | 1.16 (×2.9 menos) |
+| Igual, con 20 sondeos | 0.50 | 0.63 | 1.58 (×2.1 menos) |
+| Marcar a ≤ 0.8 m | 0.69 (×11.9) | - | - |
+
+Sensibilidad con `false_p` 0.10-0.45 y error de permitividad 0.10-0.30: el rendimiento por estación va de ×5.7 a ×11.4. Con el taladro de 3 m la ventaja cae a ×1.3, porque a ciegas ya acierta el 67 %. **No depende de la estructura espacial:** radar y taladro miden en el mismo punto. Límites: los sondeos y las estaciones se suponen independientes, y la regla necesita re-planificar dentro de la EVA (es lo que hace `/replan`).
+
+**6. Zonas de exploración de NASA** (51 de Mars Trek, 15 con datos al norte de 20°N; taladro de 3 m hipotético): Amazonis, taladro de 1 m 0.62 (CONDITIONAL) y 3 m 0.98 (GO); Deuteronilus, 0.27 (NO_GO) y 0.86 (GO); Phlegra y Acheron, 0.17 y 0.77, con aviso de hielo más somero; S1094b, 0.06 y 0.52; al sur de 30°N, ni el radar llega a GO. Al sur de 39.1°N (impacto con hielo más austral) todo queda `extrapolated`, S1094b incluido.
+
+**Conclusión:**
+- El prior regional, que es el que decide la tarjeta, está **calibrado con datos que no vio** y acierta Phoenix. Es la validación positiva con datos reales que nos faltaba.
+- El ×2.8 vuelve como "no confirmado, no refutado". El número robusto para el pitch es el del radar: **×2.9 menos EVAs para confirmar hielo**, que no depende de ese supuesto.
+- El prior por latitud es conservador en Arcadia y la tarjeta ahora lo dice. Con Viking 2 queda una tensión abierta con una estimación publicada, que conviene declarar.
 
 ## 2026-11-13: visión, bloques reales por sombras
 

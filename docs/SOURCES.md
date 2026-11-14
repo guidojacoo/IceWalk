@@ -17,6 +17,8 @@ Las reglas de Space Apps exigen citar toda fuente usada. Sumar acá cada dato, i
 | Exposiciones de hielo | https://doi.org/10.5066/P9Y8FR1R | Dundas et al. (2021) USGS |
 | Clima espacial | https://ccmc.gsfc.nasa.gov/tools/DONKI | NASA CCMC DONKI (acreditar a CCMC) |
 | Mosaico Viking MDIM 2.1 colorizado, 232 m/px (fondo del globo sin token) | https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/WMTSCapabilities.xml | NASA/USGS Astrogeology Science Center, vía NASA Trek |
+| Zonas de exploración para misiones humanas (51 zonas, capa EZMars; las usa `scripts/exploration_zones.py`) | https://trek.nasa.gov/mars/trekarcgis/rest/services/EZMars/MapServer | NASA Mars Trek (NASA/JPL-Caltech); First Landing Site/Exploration Zone Workshop for Human Missions to the Surface of Mars (2015) |
+| Impactos de Daubar 2022 al norte de 20°N (lat, lon, D, hielo), copia en `packages/model/gp/regional_impacts.csv` para el control local de la tarjeta | https://zenodo.org/record/6604912 | Daubar et al. (2022) JGR Planets, CC BY 4.0 |
 | Cesium Mars (con token de ion; asset 3644333) | https://cesium.com/platform/cesium-ion/content/cesium-mars/ | NASA/USGS Astrogeology (Viking MDIM 2.1 y MOLA-HRSC 200 m); Cesium |
 
 ## Ciencia y operación
@@ -56,7 +58,7 @@ Las reglas de Space Apps exigen citar toda fuente usada. Sumar acá cada dato, i
 | Regiones especiales | Kminek et al. (2010) Advances in Space Research (COSPAR) |
 | Playbook, SUITS, NASA-STD-3001 | Ver sección Interfaz del PRD |
 | Cota de cráteres sin fondo plano: `d > 0.2 × diámetro`. El paper presenta 0.1 y 0.2; se usa 0.2 porque es coherente con su tabla | Dundas et al. (2023) GRL, doi:10.1029/2022GL100747 |
-| Tabla de 349 cráteres: `X, Y, D_crater, D_resistant` (suplemento, `2022GL100747-sup-0002-Table SI-S01.csv`). Licencia sin confirmar | Dundas et al. (2023) GRL, doi:10.1029/2022GL100747 |
+| Tabla de 349 cráteres: `X, Y, D_crater, D_resistant` (suplemento, `2022GL100747-sup-0002-Table SI-S01.csv`). Artículo y suplemento **CC BY-NC-ND 4.0** (leído en la página de Wiley el 2026-11-12): se puede compartir el original sin modificar, sin fines comerciales y citando; no una versión adaptada | Dundas et al. (2023) GRL, doi:10.1029/2022GL100747 |
 | Get Aheads, borrado, Cribsheet, flight rules | Kagey (2024), https://ntrs.nasa.gov/api/citations/20240005248/downloads/EVA%20Ops%20101%20for%20Artemis%203%20External%20Teams.pdf |
 | Science Officer y SER | Young (2025), https://ntrs.nasa.gov/api/citations/20250004322/downloads/Young_LSSWMay2025_ScienceOpsOverview_v2.pdf; Bell et al. (2023) LPSC #2460, https://www.hou.usra.edu/meetings/lpsc2023/pdf/2460.pdf |
 | BASALT: ConOps, capacidades, decisión táctica, soporte científico y replanificación | Beaton et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442238/ y https://pmc.ncbi.nlm.nih.gov/articles/PMC6442237/; Stevens et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442282/; Payler et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442258/; Marquez et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442304/ |
@@ -71,6 +73,18 @@ Las reglas de Space Apps exigen citar toda fuente usada. Sumar acá cada dato, i
 | DTM y ortos de HiRISE en COG | USGS Astrogeology, STAC, CC0: https://stac.astrogeology.usgs.gov/api |
 | Inercia térmica THEMIS, tesela 30N180E, 100 m | Fergason et al. (2006) JGR; USGS, https://astrogeology.usgs.gov/search/map/themis_thermal_inertia_mosaic_quantitative_30n180e_100mpp |
 | Profundidad local de 97 cm en S1094b (de Dundas 2023) y modelos térmicos sin hielo en el sitio | Sizemore et al. (2026) PSJ 7:175, tabla 4 y §4.1.3, CC BY 4.0, https://doi.org/10.3847/PSJ/ae7b38 |
+| Hielo en el sitio de Phoenix (68.2°N) a 4.6 cm de profundidad media, con variación de más de 10 veces entre zanjas (control del prior regional) | Mellon et al. (2009) JGR 114, E00E07, doi:10.1029/2009JE003417 |
+| Viking Lander 2 (48°N): zanja de 10-15 cm sin hielo; Byrne et al. estiman que un poco más abajo habría llegado al hielo | NASA/JPL PIA12214, https://www.jpl.nasa.gov/images/pia12214-expected-depths-to-ice-mid-latitude-northern-mars/; Byrne et al. (2009) Science 325:1674, doi:10.1126/science.1175307 |
+| Enunciado oficial del desafío 2026 (leído el 2026-11-12) | https://www.spaceappschallenge.org/2026/challenges/interplanetary-survival-guide-martian-map/ |
+| SkyFall: helicópteros con radar para hielo a 0.5-3 m, restricciones de sitio, sitio de referencia AP-105 (43.33°N, 198.52°E) y calendario | NASA, https://science.nasa.gov/mission/skyfall/ ; paquete de información (sep. 2026), https://science.nasa.gov/wp-content/uploads/2026/09/skyfall-mission-information-package-final.pdf |
+| Probabilidad bayesiana de hielo (Arcadia 51 %; hielo somero al norte de ~45°) | Courville et al. (2026) PSJ 7:183, doi:10.3847/PSJ/ae8904, CC BY 4.0 |
+| Detección térmica de hielo y control de Phoenix (SWIM23: 4.4 cm frente a 4.6 cm medidos) | Sizemore et al. (2026) PSJ 7:175, doi:10.3847/PSJ/ae7b38, CC BY 4.0 |
+| Unidad geológica del sitio: `lAv`, Late Amazonian volcanic unit | Tanaka et al. (2014) Geologic Map of Mars, USGS SIM 3292, doi:10.3133/sim3292 |
+| Análogo de superficie para la vista en primera persona (Viking Lander 2, 48°N) | NASA/JPL, PIA00399, PIA00568, PIA00569, PIA00571 |
+| HRSC dentro del DEM MOLA-HRSC (agencia socia) | ESA/DLR/FU Berlin, Mars Express; CC BY-SA 3.0 IGO |
+| SHARAD dentro de SWIM (agencia socia) | ASI / NASA, MRO |
+| Prebreathe, navegación a blancos designados por ciencia, decisión con información local | Surface EVA Architectural Drivers (2023), NTRS 20230014957 |
+| Retraso de comunicación de hasta 22 min y decisiones sin soporte inmediato de Tierra | Human Health and Performance (2023), NTRS 20230015521 |
 | Kriging y expectation propagation para el GP | Rasmussen y Williams (2006), Gaussian Processes for Machine Learning, caps. 2 y 3, https://gaussianprocess.org/gpml/chapters/RW3.pdf |
 
 ## Supuestos del GP
@@ -86,6 +100,9 @@ Valores sin fuente, en `model/gp/observations.py`. Se ajustan en el paso 5 del p
 | `NEUTRON_SIGMA_LOG = 0.3` | Alcance gradual del espectrómetro | ~0.4-1 m alrededor de 0.6 m (`research/viabilidad-expediciones.md`) |
 | `CRATER_ERROR_M = 0.15`, usado en un taladro | Error de un taladro que no informa el suyo | Se reutiliza el valor de cráteres: 1 px en Dundas et al. (2023). Para taladro, sin fuente |
 | Profundidad excavada = 0.1 × diámetro (prior regional) | Hasta dónde "ve" un cráter nuevo de Daubar 2022: con hielo, d < 0.1·D; sin hielo, d > 0.1·D | Sin fuente directa. Byrne et al. 2009 describe cráteres con hielo de pocos metros y decímetros de profundidad (~0.1; resumen en [Dundas et al. 2014, USGS](https://pubs.usgs.gov/publication/70073409)); el DTM de S1094b da ~0.14 ([HiRISE](https://hirise.lpl.arizona.edu/dtm/ESP_073578_2155)). Con 0.2 el regional no coincide con el sitio (`EXPERIMENTS.md`, 2026-11-10). Fuente posible: cuestión 57 |
+| 50 sondeos de radar independientes por EVA (`gp.tool_strategy`) | Cuántos lugares puede marcar el radar en una EVA | Uno cada ~40 m en 2 km. El radar mide de forma continua, pero los sondeos cercanos no son independientes; sin fuente |
+| Reflector falso a una profundidad sacada de la distribución del sitio (`gp.tool_strategy`) | Dónde aparece un reflector que no es hielo | Es la mezcla que EP aproxima ensanchando el error (`gp/observations.py`); sin fuente |
+| Taladro hipotético de 3 m (`exploration_zones.json`) | Qué cambia en cada zona con más alcance | No está en el catálogo de herramientas; ilustrativo |
 | Alcance de 100 m y reparto 50/50 fuera de S1094b | Alcance del kernel y parte espacial de la varianza en un sitio sin catálogo (`gp.planning.regional_prior`) | Se toman los ajustados en S1094b; sin fuente para otros sitios |
 
 ## Supuestos de visión
@@ -163,6 +180,40 @@ agrega pointer capture, snap/inercia y edición directa. No usa un select nativo
 | Taladro de Apollo (ALSD): motorizado, < 13.6 kg, dos personas | Manual MCR-69-300, https://ntrs.nasa.gov/api/citations/19710014920/downloads/19710014920.pdf |
 | Vis-NIR y XRF de mano, ~2.5 kg (BASALT) | Sehlke et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442242/ |
 | Bingo times y "sin respuesta a tiempo, sigue la prioridad propia" | Stevens et al. (2019), https://pmc.ncbi.nlm.nih.gov/articles/PMC6442282/ |
+
+### Movimiento y composición inmersiva (2026-11-09)
+
+- Apple HIG: [Motion](https://developer.apple.com/design/human-interface-guidelines/motion), [Spatial layout](https://developer.apple.com/design/human-interface-guidelines/spatial-layout), [Tab bars](https://developer.apple.com/design/human-interface-guidelines/tab-bars), [Materials](https://developer.apple.com/design/human-interface-guidelines/materials), [Pointing devices](https://developer.apple.com/design/human-interface-guidelines/pointing-devices).
+- Apple [Applying Liquid Glass to custom views](https://developer.apple.com/documentation/swiftui/applying-liquid-glass-to-custom-views), [Meet Liquid Glass WWDC25/219](https://developer.apple.com/videos/play/wwdc2025/219/), [SwiftUI WWDC25/323](https://developer.apple.com/videos/play/wwdc2025/323/), [UIKit WWDC25/284](https://developer.apple.com/videos/play/wwdc2025/284/).
+- [MDN cursor](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor). Fuentes y calibraciones propias diferenciadas en `research/diseno-inmersivo-y-motion.md`.
+
+### Imágenes del sitio en la web (2026-11-10)
+
+- Ortoimágenes HiRISE `ESP_073578_2155_RED_A_01_ORTHO` y `ESP_073578_2155_RED_C_01_ORTHO`. Crédito: NASA/JPL-Caltech/UArizona. Copia COG de USGS Astrogeology (CC0): https://astrogeo-ard.s3-us-west-2.amazonaws.com/mars/mro/hirise/controlled/dtm/ESP_073578_2155_ESP_073077_2155/ (ver `provenance.txt` en esa carpeta). Capas `hirise_ortho_1m` y `hirise_ortho_25cm` de `data/layers.yaml`.
+
+### Fidelidad de movimiento visionOS (2026-11-11)
+
+- Apple [Design hover interactions for visionOS, WWDC25/303](https://developer.apple.com/videos/play/wwdc2025/303/): referencias de tab bar, Back y slider desde 2:08; efectos de hover y rampas desde 5:01. Los tiempos observados se distinguen de parámetros publicados en `research/visionos-motion-fidelity-2026-11-11.md`.
+- Apple [Create custom hover effects in visionOS, WWDC24/10152](https://developer.apple.com/videos/play/wwdc2024/10152/): coordinación de escala, opacidad y forma de clip; el ejemplo de escala es 1.05. No prescribe deformación líquida para todos los componentes.
+- Apple [Animate with springs, WWDC23/10158](https://developer.apple.com/videos/play/wwdc2023/10158/): modelo de springs y continuidad de velocidad. Los presets públicos se conservan separados de la calibración web en `packages/ui/src/spring.ts`.
+- Figma `TE1ta1HNhtbwSZn3LztSL5`, Context Menu `487:11347`: geometría y materiales recuperados con `get_design_context`; `get_motion_context` recursivo devolvió `nodes: []`. Ese componente estático no demuestra las transiciones nativas.
+- Apple [Design for spatial user interfaces, WWDC23/10076](https://developer.apple.com/videos/play/wwdc2023/10076/), [Design for spatial input, WWDC23/10073](https://developer.apple.com/videos/play/wwdc2023/10073/) y [Elevate your windowed app for spatial computing, WWDC23/10110](https://developer.apple.com/videos/play/wwdc2023/10110/): materiales, modales, activación y ornamentos.
+- Motion [spring generator](https://motion.dev/docs/spring), [animate](https://motion.dev/docs/animate), [springValue](https://motion.dev/docs/spring-value), [styleEffect](https://motion.dev/docs/style-effect) y [SVG morphing](https://motion.dev/docs/react-svg-animation): comparación de integración y física con velocidad. Versiones, licencias y pesos medidos de alternativas en la investigación del 11/11.
+- [CSSWG Filter Effects Level 2](https://drafts.csswg.org/filter-effects-2/) y [MDN backdrop-filter](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter): semántica del backdrop y filtros SVG; se comprobó ejecución real por motor antes de afirmar soporte.
+
+### Liquid Glass iOS 27 y Fluid Kit (2026-11-12)
+
+- [Fluid Kit](https://github.com/mikhailmogilnikov/fluid-kit) (MIT © Mikhail Mogilnikov), `@fluidkit/react` 2.0.0: material `lb`, Morph, Indicator, Drag, Layout, scroll edges y springs. Switch, slider, menú y tabs copian los ejemplos de su documentación.
+- Apple [Meet Liquid Glass, WWDC25/219](https://developer.apple.com/videos/play/wwdc2025/219/): lensing, materialización, adaptividad, variantes regular/clear, capas (vidrio solo para navegación, nunca vidrio sobre vidrio) y accesibilidad.
+- Apple [HIG: Materials](https://developer.apple.com/design/human-interface-guidelines/materials) y [design kits de iOS/iPadOS/macOS 27](https://developer.apple.com/news?id=e2lxw9l1) (23/06/2026). El kit de Figma [iOS and iPadOS 27](https://www.figma.com/community/file/1651309003795292092) no se midió.
+- Cambios de iOS 27 según prensa, sin verificar con Apple: menos transparencia, bordes más definidos, modo oscuro más claro y un control de transparencia en Ajustes ([Tech Times](https://www.techtimes.com/articles/317975/20260608/apple-liquid-glass-ios-27-wwdc-2026-brings-refinements-developers-must-adopt-today.htm), [GSMSpecs](https://www.gsmspecs.com/news/ios-27-liquid-glass-update)).
+
+### Playbook iOS/iPadOS 27 y Tailwind (continuación, 2026-11-12)
+
+- Apple HIG: [Materials](https://developer.apple.com/design/human-interface-guidelines/materials), [Color](https://developer.apple.com/design/human-interface-guidelines/color), [Typography](https://developer.apple.com/design/human-interface-guidelines/typography), [Layout](https://developer.apple.com/design/human-interface-guidelines/layout), [Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars), [Tab bars](https://developer.apple.com/design/human-interface-guidelines/tab-bars) y [Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons). Fuentes primarias consultadas; fondo y controles según su función, sin calibración nueva contra Figma. Los tokens son una adaptación web de roles de UIKit, no acceso a colores dinámicos nativos del dispositivo.
+- Fluid Kit [Morph](https://fluidkit.mogilnikov.dev/morph/): hook React, más de dos estados, montaje antes de volar, cierre al terminar, foco, refs estables, límites de transform y Reduce Motion. Se consultó también el código instalado de `@fluidkit/core` 2.0.0 para distinguir seguimiento de tamaño durante un vuelo de un nuevo cambio de estado.
+- Tailwind: [Utility classes](https://tailwindcss.com/docs/styling-with-utility-classes), [Theme variables](https://tailwindcss.com/docs/theme), [Responsive design](https://tailwindcss.com/docs/responsive-design) y [Custom styles](https://tailwindcss.com/docs/adding-custom-styles): utilidades, componentes reutilizables, variantes mobile-first y `@theme static` para tokens usados por muestras dinámicas.
+- [Ejemplo Next.js con Vitest](https://github.com/vercel/next.js/tree/canary/examples/with-vitest): React Testing Library y tests por comportamiento.
 | Hora solar en Marte y posición del Sol (Mars24) | Allison y McEwen (2000), Planetary and Space Science 48, 215-235; algoritmo y ejemplos: https://www.giss.nasa.gov/tools/mars24/help/algorithm.html |
 | Meteorología del Viking Lander 2: presión, temperatura y viento en 25 bins por sol (sols 1-1050) | NASA PDS Atmospheres, VL1/VL2-M-MET-4-BINNED-P-T-V-V1.0 (Tillman et al.), https://atmos.nmsu.edu/PDS/data/vl_1001/data/vl_tbin.dat |
 | Umbral de saltación en Marte: 25-30 m/s a la altura de los sensores del Viking | Ryan, Sharman y Lucich (1981), Local Mars dust storm generation mechanism, GRL 8(8), 899-901, doi:10.1029/GL008i008p00899 |
